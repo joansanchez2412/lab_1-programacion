@@ -1,0 +1,63 @@
+# Import OpenCV module
+import cv2
+import numpy as np
+
+def imagen_seleccionada (imagen):
+    img = None 
+    if imagen.lower() == "blue_car":
+        # Read image
+        img = cv2.imread("C:\\Users\\Personal\\Downloads\\blue_car.jfif", cv2.IMREAD_COLOR)
+        return img
+    elif imagen.lower() == "red_car":
+        # Read image
+        img = cv2.imread("C:\\Users\\Personal\\Downloads\\red_car.jfif", cv2.IMREAD_COLOR)
+        return img
+    elif imagen.lower() == "yellow_car":
+        # Read image
+        img = cv2.imread("C:\\Users\\Personal\\Downloads\\yellow_car.jfif",cv2.IMREAD_COLOR)
+        return img 
+    else:
+        return img
+
+def identifycolor (average_Blue, average_Green, average_Red):
+    if average_Green > average_Red and average_Red > average_Blue:
+        return "El automóvil es amarillo."
+    elif average_Red > average_Green and average_Red > average_Blue:
+        return "El automóvil es rojo."
+    elif average_Blue > average_Red and average_Blue > average_Green:
+        return "El automóvil es azul."
+    
+imagen = input("Digite el nombre de la imagen que see visualizar (red_car, blue_car, yellow_car): ")
+
+img = imagen_seleccionada(imagen)
+
+if img is None:
+    print("La imagen no se puede procesar, asegurese de que el nombre de la imagen sea correcto")
+    exit()
+
+
+# Get matrix for each color plane
+bluePlane = img [:,:,0]
+greenPlane = img [:,:,1]
+redPlane = img [:,:,2]
+
+#calcular valor promedio 
+average_Blue = np.mean(bluePlane)
+average_Green = np.mean(greenPlane)
+average_Red = np.mean(redPlane)
+
+print(f"valor premedio plano color azul: {average_Blue:.2f}")
+print (f"valor promedio plano color verde: {average_Green:.2f}")
+print (f"valor promedio plano color rojo: {average_Red:.2f}")
+
+color = identifycolor(average_Blue, average_Green, average_Red)
+print (color)
+
+# Show image and each color plane
+cv2.imshow("image", img)
+cv2.imshow("Blue plane", bluePlane)
+cv2.imshow("Green plane", greenPlane)
+cv2.imshow("Red plane", redPlane)
+
+cv2.waitKey(0)
+cv2.destroyAllWindows()
