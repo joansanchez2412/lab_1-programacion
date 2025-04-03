@@ -1,0 +1,44 @@
+# pip install opencv-python
+import cv2
+import numpy as np
+
+# Open the default camera
+cam = cv2.VideoCapture(0,cv2.CAP_DSHOW)
+
+# Get the default frame width and height
+frame_width = int(cam.get(cv2.CAP_PROP_FRAME_WIDTH))
+frame_height = int(cam.get(cv2.CAP_PROP_FRAME_HEIGHT))
+
+def identifySpot (frame):
+    escala_de_Grises = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    borde = cv2.Canny(escala_de_Grises, 50, 100)
+    numero_borde = np.count_nonzero(borde == 255)
+    if numero_borde < 4500:
+
+        return "La plaza seleccionada esta desocupada, puede ir a estacionar."
+    else :
+        return "La plaza selecionada esta ocupada, por favor seleccionar otra."
+
+while True:
+    # Read frame from camera
+    ret, frame = cam.read()
+
+    #print(len(frame))
+
+    # Display the captured frame after flipping
+    cv2.imshow('Parking Lot Camera', cv2.flip(frame,1))  
+    
+    a = identifySpot(frame)
+
+    borde = cv2.Canny(frame, 50, 100)
+    
+    cv2.imshow('Bordes Detectados', borde)
+    print(a)
+
+    # Wait for 10ms and exit if any key is pressed
+    if cv2.waitKey(10) != -1:
+        break
+
+# Release the capture object
+cam.release()
+cv2.destroyAllWindows()
